@@ -1,5 +1,6 @@
 package com.uet.anh.tank.object;
 
+import com.sun.javafx.font.directwrite.RECT;
 import com.uet.anh.tank.common.CommonVLs;
 
 import java.awt.*;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Created by tuana on 28/07/2016.
  */
 public class BulletManager {
-    private ArrayList<Bullet> arrBullet;
+    private ArrayList<Bullet> arrBullet = new ArrayList<>();
     Image img ;
 
     public void setArrBullet(ArrayList<Bullet> arrBullet) {
@@ -40,8 +41,9 @@ public class BulletManager {
             arrBullet.add(new Bullet(tank.getCoordinatesX() + 35, tank.getCoordinatesY() + 15, tank.getDirection()));
     }
     public void moveAll(){
-        for (int i = 0; i < getArrBullet().size(); i++) {
+        for (int i = 0; i < arrBullet.size(); i++) {
             getArrBullet().get(i).moveBullet();
         }
     }
+
 }

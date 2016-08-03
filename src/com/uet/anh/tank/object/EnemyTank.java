@@ -13,6 +13,8 @@ public class EnemyTank extends Tank {
     private long previousTime;
 
     public EnemyTank() {
+        setCoordinatesX(random.nextInt(359));
+        setCoordinatesY(random.nextInt(359));
         CommonVLs commonVLs = new CommonVLs();
         setImageUp(commonVLs.getImage("player_green_1.png"));
         setImageDown(commonVLs.getImage("player_green_2.png"));
@@ -42,7 +44,6 @@ public class EnemyTank extends Tank {
 
     @Override
     public void moveTank() {
-        System.out.println(getCoordinatesX() + " " + getCoordinatesY());
         if (!checkImpact()) {
             super.moveTank();
             if (System.currentTimeMillis() - previousTime > distanceTime) {
@@ -56,9 +57,4 @@ public class EnemyTank extends Tank {
             setDirection(randomInt);
         }
     }
-
-    public void autoShot(){
-
-    }
-
 }

@@ -23,4 +23,7 @@ public class CommonVLs {
     public Image getImage(String name){
         return new ImageIcon(getClass().getResource("/RESOURCE/Image/"+ name)).getImage();
     }
+    public String getPath(String name){
+        return getClass().getResource("/RESOURCE/sound/"+ name).getPath();
+    }
 }

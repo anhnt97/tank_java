@@ -9,8 +9,8 @@ import java.awt.*;
  * Created by tuana on 27/07/2016.
  */
 public class Tank {
-    private static final int SIZE_TANK = 40;
-    private int coordinatesX = 1;
+    public static final int SIZE_TANK = 40;
+    private int coordinatesX = 100;
     private int coordinatesY = 100;
     private Image imageUp, imageDown, imageLeft, imageRight;
     private int direction = CommonVLs.UP;
@@ -123,7 +123,6 @@ public class Tank {
      * check impact
      */
     public boolean checkImpact() {
-//        System.out.println(coordinatesX + " " + coordinatesY);
         if(coordinatesX <= 0){
             coordinatesX = 1;
             return true;

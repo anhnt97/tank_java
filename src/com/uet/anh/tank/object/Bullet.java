@@ -8,6 +8,7 @@ import java.awt.*;
  * Created by tuana on 27/07/2016.
  */
 public class Bullet {
+    public static final int SIZE_BULLET = 8;
     private int x;
     private int y;
     Image img ;
@@ -45,7 +46,7 @@ public class Bullet {
      * Draw bullet
      */
     public void drawBullet(Graphics2D g2D){
-        g2D.drawImage(img,x,y,8,8,null);
+        g2D.drawImage(img,x,y,SIZE_BULLET,SIZE_BULLET,null);
     }
     /**
      * Move bullet
