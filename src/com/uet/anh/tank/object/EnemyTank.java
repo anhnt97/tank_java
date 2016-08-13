@@ -2,7 +2,10 @@ package com.uet.anh.tank.object;
 
 import com.uet.anh.tank.common.CommonVLs;
 
+import java.awt.*;
 import java.util.Random;
+
+import static com.uet.anh.tank.common.CommonVLs.*;
 
 /**
  * Created by tuana on 31/07/2016.
@@ -10,33 +13,34 @@ import java.util.Random;
 public class EnemyTank extends Tank {
     private static final int distanceTime = 1500;
     private Random random = new Random();
-    private long previousTime;
-
+    public long previousTime;
     public EnemyTank() {
-        setCoordinatesX(random.nextInt(359));
-        setCoordinatesY(random.nextInt(359));
+        //super(x, y);
+        setX(random.nextInt(300));
+        setY(random.nextInt(300));
         CommonVLs commonVLs = new CommonVLs();
+
         setImageUp(commonVLs.getImage("player_green_1.png"));
         setImageDown(commonVLs.getImage("player_green_2.png"));
         setImageLeft(commonVLs.getImage("player_green_3.png"));
         setImageRight(commonVLs.getImage("player_green_4.png"));
-
+        setSpeed(2);
     }
 
     public void randomRun() {
         previousTime = System.currentTimeMillis();
-        int randomInt = random.nextInt(4);
+        int randomInt = random.nextInt(4) + 1;
         switch (randomInt) {
-            case 0:
+            case CommonVLs.UP:
                 this.setDirection(CommonVLs.UP);
                 break;
-            case 1:
+            case CommonVLs.DOWN:
                 this.setDirection(CommonVLs.DOWN);
                 break;
-            case 2:
+            case CommonVLs.LEFT:
                 this.setDirection(CommonVLs.LEFT);
                 break;
-            case 3:
+            case CommonVLs.RIGHT:
                 this.setDirection(CommonVLs.RIGHT);
                 break;
         }
@@ -50,11 +54,35 @@ public class EnemyTank extends Tank {
                 randomRun();
             }
         } else {
-            int randomInt = random.nextInt(4);
-            while (randomInt==getDirection()){
-                randomInt = random.nextInt(4);
+
+            int randomInt = random.nextInt(4) + 1;
+            while (randomInt == getDirection()) {
+                randomInt = random.nextInt(4) + 1;
             }
             setDirection(randomInt);
         }
+    }
+
+    public void luiTank() {
+        if (this.getDirection() == CommonVLs.UP) {
+            this.setY(this.getY() + this.getSpeed() + OBSERVE_SIZE);
+            this.setDirection(DOWN);
+        }
+
+        if (this.getDirection() == CommonVLs.DOWN) {
+            this.setY(this.getY() - this.getSpeed() - OBSERVE_SIZE);
+            this.setDirection(UP);
+        }
+
+        if (this.getDirection() == CommonVLs.LEFT) {
+            this.setX(this.getX() + this.getSpeed() + OBSERVE_SIZE );
+            this.setDirection(RIGHT);
+        }
+
+        if (this.getDirection() == CommonVLs.RIGHT){
+            this.setX(this.getX() - this.getSpeed() - OBSERVE_SIZE);
+            this.setDirection(LEFT);
+        }
+
     }
 }

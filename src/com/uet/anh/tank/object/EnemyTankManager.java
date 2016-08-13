@@ -1,5 +1,6 @@
 package com.uet.anh.tank.object;
 
+import com.uet.anh.tank.common.CommonVLs;
 import com.uet.anh.tank.playSound.PlaySound;
 
 import java.awt.*;
@@ -12,7 +13,7 @@ import static com.uet.anh.tank.common.CommonVLs.*;
  * Created by tuana on 31/07/2016.
  */
 public class EnemyTankManager {
-    private PlaySound playSound = new PlaySound();
+    private PlaySound playSound;
     private long previousTime;
     private ArrayList<EnemyTank> arrEnemyTank;
     private BulletManager bulletManager;
@@ -21,6 +22,7 @@ public class EnemyTankManager {
     public EnemyTankManager() {
         arrEnemyTank = new ArrayList<>();
         bulletManager = new BulletManager();
+        playSound = new PlaySound();
         random = new Random();
     }
 
@@ -36,61 +38,58 @@ public class EnemyTankManager {
         this.bulletManager = bulletManager;
     }
 
+    /**
+     * Tự động bắn đạn
+     */
     public void autoShot() {
         int ramdomBullet = random.nextInt(100);
         if (ramdomBullet == 5)
             for (int i = 0; i < arrEnemyTank.size(); i++) {
                 bulletManager.addBullet(arrEnemyTank.get(i));
                 playSound.playSound("shoot_tank.wav");
-
             }
-
     }
 
+    /**
+     * Vẽ tank địch
+     */
     public void drawAll(Graphics2D g2D) {
         for (int i = 0; i < arrEnemyTank.size(); i++) {
             arrEnemyTank.get(i).drawTank(g2D);
         }
     }
 
-    public boolean checkImpact() {
-        for (int i = 0; i < arrEnemyTank.size(); i++) {
+    public void checkImpact() {
+        for (int i = 0; i < arrEnemyTank.size() - 1; i++) {
             for (int j = i + 1; j < arrEnemyTank.size(); j++) {
-                if (checkCrash(arrEnemyTank.get(i), arrEnemyTank.get(j)))
-                    return true;
-                    break;
+                checkCrash(arrEnemyTank.get(i), arrEnemyTank.get(j));
             }
-
         }
-        return false;
     }
 
+    /**
+     * Di chuyển tank địch
+     */
     public void moveAll() {
         for (int i = 0; i < arrEnemyTank.size(); i++) {
-            checkImpact();
             arrEnemyTank.get(i).moveTank();
         }
     }
 
     /**
-     *Xử lí va chạm giữa 2 tank
+     * Xử lí va chạm giữa 2 tank
      */
-    public boolean checkCrash(EnemyTank enemy1, EnemyTank enemy2) {
-        Rectangle rec = new Rectangle(enemy1.getCoordinatesX(), enemy1.getCoordinatesY(), enemy1.SIZE_TANK, enemy1.SIZE_TANK);
-        Rectangle rec1 = new Rectangle(enemy2.getCoordinatesX(), enemy2.getCoordinatesY(), enemy2.SIZE_TANK, enemy2.SIZE_TANK);
-
+    public void checkCrash(EnemyTank enemy1, EnemyTank enemy2) {
+        Rectangle rec = new Rectangle(enemy1.getX(), enemy1.getY(), enemy1.SIZE_TANK, enemy1.SIZE_TANK);
+        Rectangle rec1 = new Rectangle(enemy2.getX(), enemy2.getY(), enemy2.SIZE_TANK, enemy2.SIZE_TANK);
         if (rec.intersects(rec1)) {
-            int randomInt = random.nextInt(4);
-            int randomInt2 = random.nextInt(4);
-            while (randomInt == enemy1.getDirection() || randomInt == enemy2.getDirection() || randomInt == randomInt2) {
-                randomInt = random.nextInt(4);
-                randomInt2 = random.nextInt(4);
-            }
-            enemy1.setDirection(randomInt);
-            enemy2.setDirection(randomInt2);
-            return true;
+            //enemy2.luiTank();
+            //enemy1.luiTank();
+
+            System.out.println("Chạm tank rồi");
         }
-        return false;
     }
+
+
 
 }

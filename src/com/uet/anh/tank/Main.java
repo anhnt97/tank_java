@@ -9,8 +9,6 @@ import com.uet.anh.tank.playSound.PlaySound;
 public class Main {
     public static void main(String [] args){
         GUI gui = new GUI();
-//        PlaySound playSound = new PlaySound();
-//        playSound.playSound("enter_game.wav");
         gui.setVisible(true);
     }
 }

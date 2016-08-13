@@ -11,9 +11,9 @@ public class Bullet {
     public static final int SIZE_BULLET = 8;
     private int x;
     private int y;
-    Image img ;
+    Image img;
     private int direction = CommonVLs.UP;
-    private int speed;
+    private int speed = 5;
 
     public void setX(int x) {
         this.x = x;
@@ -31,39 +31,42 @@ public class Bullet {
         return y;
     }
 
-    public Bullet(){
+    public Bullet() {
         CommonVLs commonVLs = new CommonVLs();
         img = commonVLs.getImage("bullet.png");
     }
-    public Bullet(int x,int y,int direction){
+
+    public Bullet(int x, int y, int direction) {
         this.x = x;
         this.y = y;
         this.direction = direction;
         CommonVLs commonVLs = new CommonVLs();
         img = commonVLs.getImage("bullet.png");
     }
+
     /**
      * Draw bullet
      */
-    public void drawBullet(Graphics2D g2D){
-        g2D.drawImage(img,x,y,SIZE_BULLET,SIZE_BULLET,null);
+    public void drawBullet(Graphics2D g2D) {
+        g2D.drawImage(img, x, y, SIZE_BULLET, SIZE_BULLET, null);
     }
+
     /**
      * Move bullet
      */
-    public void moveBullet(){
-        switch (direction){
+    public void moveBullet() {
+        switch (direction) {
             case CommonVLs.UP:
-                y--;
+                y -= speed;
                 break;
             case CommonVLs.DOWN:
-                y++;
+                y += speed;
                 break;
             case CommonVLs.LEFT:
-                x--;
+                x -= speed;
                 break;
             case CommonVLs.RIGHT:
-                x++;
+                x += speed;
                 break;
         }
     }

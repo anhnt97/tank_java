@@ -32,13 +32,13 @@ public class BulletManager {
     }
     public void addBullet(Tank tank){
         if (tank.getDirection() == CommonVLs.UP)
-            arrBullet.add(new Bullet(tank.getCoordinatesX() + 15, tank.getCoordinatesY() - 7, tank.getDirection()));
+            arrBullet.add(new Bullet(tank.getX() + 11, tank.getY() - 7, tank.getDirection()));
         else if (tank.getDirection() == CommonVLs.DOWN)
-            arrBullet.add(new Bullet(tank.getCoordinatesX() + 15, tank.getCoordinatesY() + 35,tank.getDirection()));
+            arrBullet.add(new Bullet(tank.getX() + 11, tank.getY() + 30,tank.getDirection()));
         else if (tank.getDirection() == CommonVLs.LEFT)
-            arrBullet.add(new Bullet(tank.getCoordinatesX() - 3, tank.getCoordinatesY() + 15, tank.getDirection()));
+            arrBullet.add(new Bullet(tank.getX() - 2 , tank.getY() + 10, tank.getDirection()));
         else if (tank.getDirection() == CommonVLs.RIGHT)
-            arrBullet.add(new Bullet(tank.getCoordinatesX() + 35, tank.getCoordinatesY() + 15, tank.getDirection()));
+            arrBullet.add(new Bullet(tank.getX() + 30, tank.getY() + 10, tank.getDirection()));
     }
     public void moveAll(){
         for (int i = 0; i < arrBullet.size(); i++) {

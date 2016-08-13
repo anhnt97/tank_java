@@ -9,35 +9,33 @@ import java.awt.*;
  * Created by tuana on 27/07/2016.
  */
 public class Tank {
-    public static final int SIZE_TANK = 40;
-    private int coordinatesX = 100;
-    private int coordinatesY = 100;
+    public static final int SIZE_TANK = 30;
+    private int x ;
+    private int y ;
     private Image imageUp, imageDown, imageLeft, imageRight;
     private int direction = CommonVLs.UP;
-    private int speed = 100;
+    private int speed;
+    public static final int SPEED_HIGH = 5;
+    public static final int SPEED_LOW = 3;
 
     public Tank() {
-        CommonVLs commonVLs = new CommonVLs();
-        imageUp = commonVLs.getImage("bossyellow_1.png");
-        imageDown = commonVLs.getImage("bossyellow_2.png");
-        imageLeft = commonVLs.getImage("bossyellow_3.png");
-        imageRight = commonVLs.getImage("bossyellow_4.png");
     }
 
-    public void setCoordinatesX(int coordinatesX) {
-        this.coordinatesX = coordinatesX;
+
+    public int getX() {
+        return x;
     }
 
-    public int getCoordinatesX() {
-        return coordinatesX;
+    public int getY() {
+        return y;
     }
 
-    public void setCoordinatesY(int coordinatesY) {
-        this.coordinatesY = coordinatesY;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public int getCoordinatesY() {
-        return coordinatesY;
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void setImageUp(Image imageTank) {
@@ -72,15 +70,15 @@ public class Tank {
         return direction;
     }
 
-    public Tank(int x, int y, int speed) {
+    public Tank(int x, int y) {
         CommonVLs commonVLs = new CommonVLs();
         imageUp = commonVLs.getImage("bossyellow_1.png");
         imageDown = commonVLs.getImage("bossyellow_2.png");
         imageLeft = commonVLs.getImage("bossyellow_3.png");
         imageRight = commonVLs.getImage("bossyellow_4.png");
-        this.coordinatesX = x;
-        this.coordinatesY = y;
-        this.speed = speed;
+        this.x = x;
+        this.y = y;
+        this.speed = 0;
     }
 
     /**
@@ -88,56 +86,83 @@ public class Tank {
      */
 
     public void drawTank(Graphics2D g2d) {
-        if (direction == CommonVLs.UP)
-            g2d.drawImage(imageUp, coordinatesX, coordinatesY, SIZE_TANK, SIZE_TANK, null);
-        else if (direction == CommonVLs.DOWN)
-            g2d.drawImage(imageDown, coordinatesX, coordinatesY, SIZE_TANK, SIZE_TANK, null);
-        else if (direction == CommonVLs.LEFT)
-            g2d.drawImage(imageLeft, coordinatesX, coordinatesY, SIZE_TANK, SIZE_TANK, null);
-        else if (direction == CommonVLs.RIGHT)
-            g2d.drawImage(imageRight, coordinatesX, coordinatesY, SIZE_TANK, SIZE_TANK, null);
-        else g2d.drawImage(imageRight, 100, 100, SIZE_TANK, SIZE_TANK, null);
+        switch (direction) {
+            case CommonVLs.UP:
+                g2d.drawImage(imageUp, x, y, SIZE_TANK, SIZE_TANK, null);
+                break;
+            case CommonVLs.DOWN:
+                g2d.drawImage(imageDown, x, y, SIZE_TANK, SIZE_TANK, null);
+                break;
+            case CommonVLs.LEFT:
+                g2d.drawImage(imageLeft, x, y, SIZE_TANK, SIZE_TANK, null);
+                break;
+            case CommonVLs.RIGHT:
+                g2d.drawImage(imageRight, x, y, SIZE_TANK, SIZE_TANK, null);
+                break;
+        }
     }
 
     /**
-     * Move tank
-     */
+    * Move tank
+    */
     public void moveTank() {
-            switch (direction) {
-                case CommonVLs.UP:
-                    coordinatesY--;
-                    break;
-                case CommonVLs.DOWN:
-                    coordinatesY++;
-                    break;
-                case CommonVLs.LEFT:
-                    coordinatesX--;
-                    break;
-                case CommonVLs.RIGHT:
-                    coordinatesX++;
-                    break;
-            }
+        switch (direction) {
+            case CommonVLs.UP:
+                this.y-= speed;
+                break;
+            case CommonVLs.DOWN:
+                this.y+= speed;
+                break;
+            case CommonVLs.LEFT:
+                this.x-= speed;
+                break;
+            case CommonVLs.RIGHT:
+                this.x+= speed;
+                break;
+        }
+
+    }
+
+    /**
+     * Move tank 2
+     */
+    public void moveTank(int direction) {
+        this.direction = direction;
+        switch (direction) {
+            case CommonVLs.UP:
+               y-= speed;
+                break;
+            case CommonVLs.DOWN:
+                y+= speed;
+                break;
+            case CommonVLs.LEFT:
+                x-= speed;
+                break;
+            case CommonVLs.RIGHT:
+                x+= speed;
+                break;
+        }
     }
 
     /**
      * check impact
      */
     public boolean checkImpact() {
-        if(coordinatesX <= 0){
-            coordinatesX = 1;
+        if(x <= 20){
+            x = 21;
             return true;
         }
-        if(coordinatesY <= 0){
-            coordinatesY = 1;
+        if(y <= 20){
+            y = 21;
             return true;
         }
 
-        if(coordinatesX >= CommonVLs.WIDTH_PLAY - SIZE_TANK){
-            coordinatesX = CommonVLs.WIDTH_PLAY - SIZE_TANK - 1;
+        if(x >= CommonVLs.WIDTH_PLAY - SIZE_TANK - 20){
+            x = CommonVLs.WIDTH_PLAY - SIZE_TANK - 21 ;
             return true;
         }
-        if(coordinatesY >= CommonVLs.HEGHT_PLAY - SIZE_TANK){
-            coordinatesY = CommonVLs.HEGHT_PLAY - SIZE_TANK - 1;
+        if(y >= CommonVLs.HEGHT_PLAY - SIZE_TANK - 20){
+            y = CommonVLs.HEGHT_PLAY - SIZE_TANK - 21;
             return true;
         }
        return false;
