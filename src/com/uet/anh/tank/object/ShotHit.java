@@ -61,12 +61,12 @@ public class ShotHit {
                 rec1.setLocation(bulletManager.getArrBullet().get(i).getX(), bulletManager.getArrBullet().get(i).getY());
                 if (rec.intersects(rec1)) {
 
-
+                    bulletManager.getArrBullet().remove(i);
                     playSound.playSound("buildBouns.wav");
                     JOptionPane.showMessageDialog(null,"Thua rồi!","Information",JOptionPane.INFORMATION_MESSAGE);
                     animationManager.addAnim(CommonVLs.TANK_EXPLORE,
                             (int)rec.getX(),(int)rec.getY() );
-                    bulletManager.getArrBullet().remove(i);
+
                     //player.setX(50);
                    // player.setY(50);
                     return true;

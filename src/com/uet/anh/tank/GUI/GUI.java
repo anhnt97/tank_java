@@ -44,21 +44,45 @@ public class GUI extends JFrame {
         setIconImage(imgIcon);
     }
 
-    public void setMenu(boolean check) {
-        this.menu.setVisible(check);
+    /**
+     * Back menu
+     */
+    public void backMenu() {
+        this.pauseGame();
+        this.menu.setVisible(true);
+        this.play.setVisible(false);
+        this.status.setVisible(false);
     }
 
-    public void setPlay(boolean check) {
-        this.play.setFocusable(check);
-        this.play.setVisible(check);
-    }
-
+    /**
+     *   hàm dùng khi vào chơi
+     */
     public void playGame(){
+        System.out.println("gui: " + isFocusable());
+        this.pauseGame();
+//        this.menu.setFocusable(false);
         this.menu.setVisible(false);
         this.status.setVisible(true);
+//        this.play.setFocusable(true);
         this.play.setVisible(true);
         this.play.start();
     }
+
+    /**
+     * Hàm dùng khi restart game
+     */
+    public void resetGame(){
+        this.pauseGame();
+        this.play.restart();
+    }
+
+    /**
+     * Hàm dùng pause game
+     */
+    public void pauseGame(){
+        this.play.pause();
+    }
+
 
     public void setStatus(boolean check) {
         this.status.setVisible(check);
@@ -70,7 +94,7 @@ public class GUI extends JFrame {
 
     public void setNewGame() {
         play.setFocusable(true);
-        play.reset();
+        //play.reset();
 //        PlayPanel panel = new PlayPanel();
 //        panel.removeAll();
 //        this.add(panel);

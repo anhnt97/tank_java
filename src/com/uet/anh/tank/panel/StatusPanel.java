@@ -85,8 +85,7 @@ public class StatusPanel extends JPanel {
            @Override
            public void mouseClicked(MouseEvent e) {
                btNewGame.setFocusable(false);
-               gui.setNewGame();
-               gui.repaint();
+               gui.resetGame();
            }
 
            @Override
@@ -114,12 +113,8 @@ public class StatusPanel extends JPanel {
         btPause.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() % 2 == 0){
-                    gui.setPlaying(false);
-                }
-                else
-                    gui.setPlaying(true);
-
+                btPause.setFocusable(false);
+                    gui.pauseGame();
             }
 
             @Override
@@ -147,9 +142,8 @@ public class StatusPanel extends JPanel {
         btBackMenu.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                StatusPanel.this.setVisible(false);
-                gui.setPlay(false);
-                gui.setMenu(true);
+                btBackMenu.setFocusable(false);
+                gui.backMenu();
             }
 
             @Override

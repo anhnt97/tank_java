@@ -90,13 +90,16 @@ public class PlayPanel extends JPanel implements KeyListener, Runnable {
     }
 
     public void start(){
+        setFocusable(true);
         isPlaying = true;
-
         Thread th = new Thread(this);
         th.start();
+
+        System.out.println(isFocusable());
     }
 
     public void restart(){
+        setFocusable(true);
         initData();
         isPlaying = true;
         Thread th = new Thread(this);
@@ -232,14 +235,10 @@ public class PlayPanel extends JPanel implements KeyListener, Runnable {
         orient = 0;
     }
 
-    public void reset(){
-    }
-
     @Override
     public void run() {
         playSound.playSound("enter_game.wav");
         while (isPlaying) {
-            System.out.println("ok men");
             count ++;
             update();
             try {
