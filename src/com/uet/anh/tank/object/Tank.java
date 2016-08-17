@@ -145,26 +145,36 @@ public class Tank {
     }
 
     /**
-     * check impact
+     * Check 1 điểm trong tank
      */
-    public boolean checkImpact() {
-        if(x <= 20){
-            x = 21;
+    private boolean isPointInside(int xObj, int yObj, int x, int y) {
+        int bottomPoint = y + this.SIZE_TANK;
+        int rightPoint = x + this.SIZE_TANK;
+        if (xObj > x && yObj > y && xObj < rightPoint && yObj < bottomPoint) {
             return true;
         }
-        if(y <= 20){
-            y = 21;
-            return true;
-        }
-
-        if(x >= CommonVLs.WIDTH_PLAY - SIZE_TANK - 20){
-            x = CommonVLs.WIDTH_PLAY - SIZE_TANK - 21 ;
-            return true;
-        }
-        if(y >= CommonVLs.HEGHT_PLAY - SIZE_TANK - 20){
-            y = CommonVLs.HEGHT_PLAY - SIZE_TANK - 21;
-            return true;
-        }
-       return false;
+        return false;
     }
+    /**
+     * Check 4 góc trong tank
+     */
+    public boolean isObjInside(int xObj, int yObj) {
+        int x = this.getX();
+        int y = this.getY();
+
+        if (isPointInside(xObj, yObj, x, y)
+                || isPointInside(xObj + this.SIZE_TANK, yObj, x, y)
+                || isPointInside(xObj, yObj + this.SIZE_TANK, x, y)
+                || isPointInside(xObj + this.SIZE_TANK, yObj + this.SIZE_TANK, x, y)) {
+            return true;
+        }
+        if (isPointInside(x, y, xObj, yObj)
+                || isPointInside(x, y + this.SIZE_TANK, xObj, yObj)
+                || isPointInside(x + this.SIZE_TANK, y, xObj, yObj)
+                || isPointInside(x + this.SIZE_TANK, y + this.SIZE_TANK, xObj, yObj)) {
+            return true;
+        }
+        return false;
+    }
+
 }

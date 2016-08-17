@@ -52,26 +52,27 @@ public class ShotHit {
      * địch bắn chết player
      */
 
-    public boolean shotHitEnemy(PlayerTank player,BulletManager bulletManager){
+    public boolean shotHitEnemy(PlayerTank player,BulletManager bulletManager,
+                                AnimationManager animationManager){
         Rectangle rec = new Rectangle(SIZE_TANK, SIZE_TANK);
         Rectangle rec1 = new Rectangle(8 , 8);
             rec.setLocation(player.getX(), player.getY());
             for (int i = 0; i < bulletManager.getArrBullet().size(); i++) {
                 rec1.setLocation(bulletManager.getArrBullet().get(i).getX(), bulletManager.getArrBullet().get(i).getY());
                 if (rec.intersects(rec1)) {
+
+
                     playSound.playSound("buildBouns.wav");
                     JOptionPane.showMessageDialog(null,"Thua rồi!","Information",JOptionPane.INFORMATION_MESSAGE);
+                    animationManager.addAnim(CommonVLs.TANK_EXPLORE,
+                            (int)rec.getX(),(int)rec.getY() );
                     bulletManager.getArrBullet().remove(i);
-                    player.setX(50);
-                    player.setY(50);
+                    //player.setX(50);
+                   // player.setY(50);
                     return true;
                 }
             }
             return false;
     }
-    // vẽ ảnh nổ
-//    public void drawExplosion(Graphics2D g2D) {
-//        g2D.drawImage(imgExplosion, x, y, SIZE_TANK, SIZE_TANK, null);
-//    }
 }
 

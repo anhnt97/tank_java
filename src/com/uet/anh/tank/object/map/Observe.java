@@ -19,15 +19,15 @@ public class Observe {
         this.y = y;
         this.type = type;
 
-        if (this.type == CommonVLs.BRICK_TYPE){
+        if (this.type == CommonVLs.BRICK_TYPE) {
             CommonVLs commonVLs = new CommonVLs();
             img = commonVLs.getImage("brick1.png");
         }
     }
 
-   public void draw (Graphics2D g2D){
-       g2D.drawImage(this.img,x*size,y*size,this.size,this.size,null);
-   }
+    public void draw(Graphics2D g2D) {
+        g2D.drawImage(this.img, x * size, y * size, this.size, this.size, null);
+    }
 
     /**
      * Check 1 điểm trong tank vs gạch
@@ -40,6 +40,7 @@ public class Observe {
         }
         return false;
     }
+
     /**
      * Check 4 góc trong tank vs gạch
      */

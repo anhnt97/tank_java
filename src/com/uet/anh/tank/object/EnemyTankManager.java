@@ -1,6 +1,7 @@
 package com.uet.anh.tank.object;
 
 import com.uet.anh.tank.common.CommonVLs;
+import com.uet.anh.tank.object.map.MapManager;
 import com.uet.anh.tank.playSound.PlaySound;
 
 import java.awt.*;
@@ -45,7 +46,8 @@ public class EnemyTankManager {
         int ramdomBullet = random.nextInt(100);
         if (ramdomBullet == 5)
             for (int i = 0; i < arrEnemyTank.size(); i++) {
-                bulletManager.addBullet(arrEnemyTank.get(i));
+                EnemyTank tank = arrEnemyTank.get(i);
+                bulletManager.addBullet(tank);
                 playSound.playSound("shoot_tank.wav");
             }
     }
@@ -59,37 +61,138 @@ public class EnemyTankManager {
         }
     }
 
-    public void checkImpact() {
-        for (int i = 0; i < arrEnemyTank.size() - 1; i++) {
-            for (int j = i + 1; j < arrEnemyTank.size(); j++) {
-                checkCrash(arrEnemyTank.get(i), arrEnemyTank.get(j));
+    /**
+     * Check va chạm với tường và tank khác
+     */
+
+    public void checkAndMoveTank(MapManager mapManager,PlayerTank player) {
+        for (int i = 0; i < arrEnemyTank.size(); i++) {
+            EnemyTank tank = arrEnemyTank.get(i);
+            boolean isAllowMove = true;
+            switch (tank.getDirection()) {
+                case CommonVLs.UP:
+                    if (mapManager.checkInsideTank(tank.getX(), tank.getY() - tank.getSpeed(),
+                            tank.SIZE_TANK)) {
+                        isAllowMove = false;
+                    }
+                    break;
+                case CommonVLs.DOWN:
+                    if (mapManager.checkInsideTank(tank.getX(), tank.getY() + tank.getSpeed(),
+                            tank.SIZE_TANK)) {
+                        isAllowMove = false;
+                    }
+                    break;
+                case CommonVLs.LEFT:
+                    if (mapManager.checkInsideTank(tank.getX() - tank.getSpeed(), tank.getY(),
+                            tank.SIZE_TANK)) {
+                        isAllowMove = false;
+                    }
+                    break;
+                case CommonVLs.RIGHT:
+                    if (mapManager.checkInsideTank(tank.getX() + tank.getSpeed(), tank.getY(),
+                            tank.SIZE_TANK)) {
+                        isAllowMove = false;
+                    }
+                    break;
+            }
+            /**
+             *  Check with other tank
+             */
+
+            for (int j = 0; j < arrEnemyTank.size(); j++) {
+                EnemyTank tank2 = arrEnemyTank.get(j);
+//                Rectangle rec = new Rectangle(tank.getX(),tank.getY(),tank.SIZE_TANK,tank.SIZE_TANK);
+//                Rectangle rec2 = new Rectangle(arrEnemyTank.get(j).getX(),
+//                        arrEnemyTank.get(j).getY(),tank.SIZE_TANK,tank.SIZE_TANK);
+                //System.out.println("Chạm tank");
+                if (tank2 != tank){
+                    switch (tank.getDirection()) {
+                        case CommonVLs.UP:
+                            if (tank2.isObjInside(tank.getX(), tank.getY() - tank.getSpeed())) {
+                                isAllowMove = false;
+                                tank.setDirection(DOWN);
+                            }
+                            break;
+                        case CommonVLs.DOWN:
+                            if (tank2.isObjInside(tank.getX(), tank.getY() + tank.getSpeed())) {
+                                isAllowMove = false;
+                                tank.setDirection(UP);
+                            }
+                            break;
+                        case CommonVLs.LEFT:
+                            if (tank2.isObjInside(tank.getX() - tank.getSpeed(), tank.getY())) {
+                                isAllowMove = false;
+                                tank.setDirection(RIGHT);
+                            }
+                            break;
+                        case CommonVLs.RIGHT:
+                            if (tank2.isObjInside(tank.getX() + tank.getSpeed(), tank.getY())) {
+                                isAllowMove = false;
+                                tank.setDirection(LEFT);
+                            }
+                            break;
+                    }
+                }
+
+            }
+
+//            /**
+//             * check with player
+//             */
+//            if (tank.isObjInside(player.getX(),player.getY())){
+//                isAllowMove =false;
+//            }
+
+
+            if (isAllowMove) {
+                tank.moveTank();
             }
         }
     }
 
     /**
-     * Di chuyển tank địch
+     *  check crash with player tank
      */
-    public void moveAll() {
+
+    public boolean  checkPlayerTank(PlayerTank player){
         for (int i = 0; i < arrEnemyTank.size(); i++) {
-            arrEnemyTank.get(i).moveTank();
+            EnemyTank tank = arrEnemyTank.get(i);
+            switch (tank.getDirection()) {
+                case CommonVLs.UP:
+                    if (player.isObjInside(tank.getX(), tank.getY() - tank.getSpeed())) {
+                        return false;
+                    }
+                    break;
+                case CommonVLs.DOWN:
+                    if (player.isObjInside(tank.getX(), tank.getY() + tank.getSpeed())) {
+                        return false;
+                    }
+                    break;
+                case CommonVLs.LEFT:
+                    if (player.isObjInside(tank.getX() - tank.getSpeed(), tank.getY())) {
+                       return false;
+                    }
+                    break;
+                case CommonVLs.RIGHT:
+                    if (player.isObjInside(tank.getX() + tank.getSpeed(), tank.getY())) {
+                        return false;
+                    }
+                    break;
+            }
         }
+        return true;
     }
+
 
     /**
-     * Xử lí va chạm giữa 2 tank
+     * Move all tank
      */
-    public void checkCrash(EnemyTank enemy1, EnemyTank enemy2) {
-        Rectangle rec = new Rectangle(enemy1.getX(), enemy1.getY(), enemy1.SIZE_TANK, enemy1.SIZE_TANK);
-        Rectangle rec1 = new Rectangle(enemy2.getX(), enemy2.getY(), enemy2.SIZE_TANK, enemy2.SIZE_TANK);
-        if (rec.intersects(rec1)) {
-            //enemy2.luiTank();
-            //enemy1.luiTank();
 
-            System.out.println("Chạm tank rồi");
+    public void moveAll() {
+        for (int i = 0; i < arrEnemyTank.size(); i++) {
+            EnemyTank tank = arrEnemyTank.get(i);
+            tank.randomRun();
         }
     }
-
-
 
 }

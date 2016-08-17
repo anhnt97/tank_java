@@ -16,9 +16,9 @@ import java.util.ArrayList;
 /**
  * Created by tuana on 27/07/2016.
  */
-public class PlayPanel extends JPanel implements KeyListener {
-    private Menu screenStart;
-    // private GUI gui ;
+public class PlayPanel extends JPanel implements KeyListener, Runnable {
+    private MenuPanel screenStart;
+    private GUI gui ;
     private PlaySound playSound;
     private ShotHit shotHit;
     private Graphics2D g2D;
@@ -26,6 +26,8 @@ public class PlayPanel extends JPanel implements KeyListener {
     private EnemyTank enemyTank;
     private EnemyTank enemyTank1;
     private EnemyTank enemyTank2;
+    private EnemyTank enemyTank3;
+    private EnemyTank enemyTank4;
     private EnemyTankManager enemyTankManager;
     private PlayerTank playerTank;
     private BulletManager bulletTank;
@@ -34,7 +36,7 @@ public class PlayPanel extends JPanel implements KeyListener {
     private AnimationManager animManager;
     private Bullet bullet;
     MapManager mapManager;
-    //private boolean checkTank = false;
+    private boolean checkTank;
     private boolean isPlaying;
     private int orient;
 
@@ -42,36 +44,41 @@ public class PlayPanel extends JPanel implements KeyListener {
         this.isPlaying = isPlaying;
     }
 
-//    //public void setGui(GUI gui) {
-//        this.gui = gui;
-//    }
-
-    public PlayPanel() {
-        isPlaying = true;
-        setLayout(null);
-        setBounds(1, 1, CommonVLs.WIDTH_PLAY, CommonVLs.HEGHT_PLAY);
-        setBackground(Color.cyan);
-        initCompoments();
-
-        thread.start();
-
+    public void setGui(GUI gui) {
+        this.gui = gui;
     }
 
-    private void initCompoments() {
-        //screenStart = new Menu();
-        //this.add(screenStart);
+    /**
+     * init view
+     * init listener
+     */
+    public PlayPanel() {
+        initViewCompoments();
+        initData();
+    }
+
+    private void initViewCompoments() {
+        setBounds(1, 1, CommonVLs.WIDTH_PLAY, CommonVLs.HEGHT_PLAY);
+        setBackground(Color.cyan);
+        addKeyListener(this);
+        setFocusable(true);
+    }
+
+    private void initData(){
         playSound = new PlaySound();
         playerTank = new PlayerTank(200, 200);
-        enemyTank = new EnemyTank();
-        enemyTank1 = new EnemyTank();
-        enemyTank2 = new EnemyTank();
+        enemyTank = new EnemyTank(100,200);
+        enemyTank1 = new EnemyTank(130,100);
+        enemyTank2 = new EnemyTank(50,80);
+        enemyTank3 = new EnemyTank(150,140);
+        enemyTank4 = new EnemyTank(125,60);
         arrEnemy = new ArrayList<>();
         arrEnemy.add(enemyTank);
         arrEnemy.add(enemyTank1);
         arrEnemy.add(enemyTank2);
-
+        arrEnemy.add(enemyTank3);
+        arrEnemy.add(enemyTank4);
         animManager = new AnimationManager();
-
         bullet = new Bullet();
         enemyTankManager = new EnemyTankManager();
         bulletTank = new BulletManager();
@@ -79,10 +86,25 @@ public class PlayPanel extends JPanel implements KeyListener {
         enemyTankManager.setArrEnemyTank(arrEnemy);
         enemyTankManager.setBulletManager(bulletEnemy);
         shotHit = new ShotHit();
-
         mapManager = new MapManager();
-        addKeyListener(this);
-        setFocusable(true);
+    }
+
+    public void start(){
+        isPlaying = true;
+
+        Thread th = new Thread(this);
+        th.start();
+    }
+
+    public void restart(){
+        initData();
+        isPlaying = true;
+        Thread th = new Thread(this);
+        th.start();
+    }
+
+    public void pause(){
+        isPlaying = false;
     }
 
     @Override
@@ -110,32 +132,25 @@ public class PlayPanel extends JPanel implements KeyListener {
          * hoặc hồi sinh ở vị trí khác
          */
 
-        shotHit.shotHitTank(enemyTankManager, bulletTank, animManager);
-        if (enemyTankManager.getArrEnemyTank().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "You win!", "congratulations", JOptionPane.INFORMATION_MESSAGE);
-            isPlaying = false;
-        }
-        if (shotHit.shotHitEnemy(playerTank, bulletEnemy)) {
-            orient = 0;
+
+        enemyTankManager.checkAndMoveTank(mapManager,playerTank);
+        enemyTankManager.autoShot();
+        if (count % 20 == 0){
+            enemyTankManager.moveAll();
         }
 
-        if (!mapManager.checkInsideBullet(bulletEnemy, animManager)) {
+        if (!mapManager.checkInsideBullet(bulletTank, animManager)){
+            bulletTank.moveAll();
+        }
+        if (!mapManager.checkInsideBullet(bulletEnemy, animManager)){
             bulletEnemy.moveAll();
         }
 
-        if (!mapManager.checkInsideBullet(bulletTank, animManager))
-            bulletTank.moveAll();
-
-        mapManager.checkInsideEnemy(enemyTankManager);
-        //enemyTankManager.moveAll();
-        enemyTankManager.checkImpact();
-        enemyTankManager.autoShot();
-        enemyTankManager.moveAll();
-        if (orient != 0) {
+        if (orient != 0 && checkTank) {
             switch (orient) {
                 case CommonVLs.UP:
                     if (!mapManager.checkInsideTank(playerTank.getX(), playerTank.getY() - playerTank.getSpeed(),
-                            playerTank.SIZE_TANK)) {
+                            playerTank.SIZE_TANK) ) {
                         playerTank.moveTank(orient);
                     }
                     break;
@@ -154,40 +169,28 @@ public class PlayPanel extends JPanel implements KeyListener {
                 case CommonVLs.RIGHT:
                     if (!mapManager.checkInsideTank(playerTank.getX() + playerTank.getSpeed(),
                             playerTank.getY(),
-                            playerTank.SIZE_TANK) && !playerTank.checkCrashTank(enemyTankManager)) {
+                            playerTank.SIZE_TANK)) {
                         playerTank.moveTank(orient);
                     }
                     break;
             }
         }
+        checkTank = enemyTankManager.checkPlayerTank(playerTank);
 
-
-
+        if (enemyTankManager.getArrEnemyTank().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "You win!", "congratulations", JOptionPane.INFORMATION_MESSAGE);
+            isPlaying = false;
+        }
+        shotHit.shotHitTank(enemyTankManager, bulletTank, animManager);
+        if (shotHit.shotHitEnemy(playerTank, bulletEnemy,animManager)) {
+            orient = 0;
+        }
 
         // vẽ lại giao diện
         repaint();
     }
-    // bien kiem soat animation
+    // biến đếm
     private int count = 0;
-
-    Thread thread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            playSound.playSound("enter_game.wav");
-            while (isPlaying) {
-                count ++;
-                update();
-                try {
-                    // update sau một thời gian
-                    Thread.sleep(17);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (count > 9999999)
-                count = 0;
-        }
-    });
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -200,24 +203,23 @@ public class PlayPanel extends JPanel implements KeyListener {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
                 orient = CommonVLs.UP;
-                //checkTank = true;
+                checkTank = true;
                 break;
             case KeyEvent.VK_DOWN:
                 orient = CommonVLs.DOWN;
-                //checkTank = true;
+                checkTank = true;
                 break;
             case KeyEvent.VK_LEFT:
                 orient = CommonVLs.LEFT;
-                //checkTank = true;
+                checkTank = true;
                 break;
             case KeyEvent.VK_RIGHT:
                 orient = CommonVLs.RIGHT;
-                //checkTank = true;
+                checkTank = true;
                 break;
             case KeyEvent.VK_SPACE:
                 bulletTank.addBullet(playerTank);
                 playSound.playSound("shoot.wav");
-
                 break;
         }
         //playSound.playSound("move.wav");
@@ -230,6 +232,25 @@ public class PlayPanel extends JPanel implements KeyListener {
         orient = 0;
     }
 
+    public void reset(){
+    }
 
+    @Override
+    public void run() {
+        playSound.playSound("enter_game.wav");
+        while (isPlaying) {
+            System.out.println("ok men");
+            count ++;
+            update();
+            try {
+                // update sau một khoảng thời gian
+                Thread.sleep(17);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (count > 9999999)
+            count = 0;
+    }
 }
 
